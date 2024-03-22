@@ -28,5 +28,14 @@ describe("curry", () => {
 
         expect(h(6, 2)).toBe(15);
         expect(mockedFunctionToCurry).toHaveBeenCalledWith(12, 3, 6, 2);
+    });
+    it("properly reports the length of the curried function", () => {
+        const mockedFunctionToCurry = jest.fn((a, b, c, d) => (a + b * c) / d);
+        const f = curry(mockedFunctionToCurry);
+        const g = f(12);
+        const h = g(3);
+
+        expect(g.length).toBe(3);
+        expect(f.length).toBe(4)
     })
 });
