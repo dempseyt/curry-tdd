@@ -18,6 +18,6 @@ describe("curry", () => {
         const f = curry(mockedToCurry);
         const g = f(12, 3);
         expect(g(6, 2)).toBe(15);
-        expect(mockedToCurry).toHaveBeenCalledWith()
+        expect(mockedToCurry).toHaveBeenCalledWith(12, 3, 6, 2)
 ;    })
 })
