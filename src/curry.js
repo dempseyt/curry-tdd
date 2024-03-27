@@ -31,14 +31,14 @@ function curry(func) {
         // Scenario 1: There are remaining arguments
         if (isRemainingArguments) {
             return functionOfArity((...args) => {
-                    return curriedFunction(...providedArguments, ...args);
+                    return curriedFunction.call(this, ...providedArguments, ...args);
                 }, remainingArguments
             )
             
         } 
         // Scenario 2: No remaining arguments
         else {
-            return func(...providedArguments);
+            return func.call(this, ...providedArguments);
         }
     }
         return functionOfArity(curriedFunction, arityOfCurriedFunction);
