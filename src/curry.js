@@ -1,53 +1,48 @@
 function functionOfArity(func, arity) {
-    if (arity === 4) {
-        return (a, b, c, d) => {
-            return func(a, b, c, d);
-        };
+    switch (arity) {
+        case 4:
+            return function(a, b, c, d) {
+                // Only apply func with the supplied arguments
+                // How do I access the supplied arguments to a function
+                return func.apply(this, arguments);
+            }
+        case 3:
+            return function(a, b, c) {
+                return func.apply(this, arguments);
+            }
+        case 2:
+            return function(a, b) {
+                return func.apply(this, arguments);
+            }
+        case 1: 
+            return function(a) {
+                return func.apply(this, arguments);
+            }
     }
-    if (arity === 3) {
-        return (a, b, c) => {
-            return func(a, b, c);
-        };
-    }
-    if (arity === 2) {
-        return (a, b) => {
-            return func(a, b);
-        };
-    }
-    if (arity === 1) {
-        return (a) => {
-            return func(a);
-        };
-    }
-    return func;
 }
 
 function curry(func) {
-    const numberOfRequiredArgs = func.length;
-    const storedArgs = [];
+    const arityOfCurriedFunction = func.length;
+    
+    function curriedFunction(...providedArguments) {
+        const remainingArguments = arityOfCurriedFunction - providedArguments.length;
+        const isRemainingArguments = remainingArguments > 0;
 
-    function curriedFunction(...providedArgs) {
-        for (let arg of providedArgs) {
-            if (arg !== undefined) {
-                storedArgs.push(arg);
-            }
+        // Scenario 1: There are remaining arguments
+        if (isRemainingArguments) {
+            return functionOfArity((...args) => {
+                    return curriedFunction(...providedArguments, ...args);
+                }, remainingArguments
+            )
+            
+        } 
+        // Scenario 2: No remaining arguments
+        else {
+            return func(...providedArguments);
         }
-
-        // all required arguments have been provided.
-        //  - we can fully apply the underlying function.
-        if (numberOfRequiredArgs === storedArgs.length) {
-            return func(...storedArgs);
-        }
-        
-        // or some arguments are yet to be provided.
-        //  - we return the partially applied function with the arguments provided.
-        const numOfRemainingArgs = numberOfRequiredArgs - storedArgs.length;
-        return functionOfArity(
-            curriedFunction,
-            numOfRemainingArgs
-        )
     }
-    return functionOfArity(curriedFunction, numberOfRequiredArgs, []);
-}
-
-export default curry;
+        return functionOfArity(curriedFunction, arityOfCurriedFunction);
+    }
+    
+    export default curry;
+    
