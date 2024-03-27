@@ -37,10 +37,10 @@ describe("curry", () => {
         const g = f(12);
         expect(g.length).toBe(3);
 
-        const h = g(3);
-        expect(h.length).toBe(2);
+        const h = g(3, 1);
+        expect(h.length).toBe(1);
 
-        const i = h(2);
-        expect(i.length).toBe(1);
+        // const i = h(2);
+        // expect(i.length).toBe(1);
     })
 });

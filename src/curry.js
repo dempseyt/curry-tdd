@@ -27,7 +27,6 @@ function curry(func) {
     const storedArgs = [];
 
     function curriedFunction(...providedArgs) {
-        // const passedInArguments = providedArgs.filter((arg) => arg !== undefined);
         for (let arg of providedArgs) {
             if (arg !== undefined) {
                 storedArgs.push(arg);
