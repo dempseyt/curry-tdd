@@ -32,10 +32,15 @@ describe("curry", () => {
     it("properly reports the length of the curried function", () => {
         const mockedFunctionToCurry = jest.fn((a, b, c, d) => (a + b * c) / d);
         const f = curry(mockedFunctionToCurry);
-        const g = f(12);
-        const h = g(3);
-
-        expect(g.length).toBe(3);
         expect(f.length).toBe(4)
+
+        const g = f(12);
+        expect(g.length).toBe(3);
+
+        const h = g(3);
+        expect(h.length).toBe(2);
+
+        const i = h(2);
+        expect(i.length).toBe(1);
     })
 });
