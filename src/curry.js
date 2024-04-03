@@ -39,15 +39,16 @@ function curry(func) {
     const arityOfCurriedFunction = func.length;
     
     function curriedFunction(...providedArguments) {
+        const workingArity = providedArguments.length > arityOfCurriedFunction ? providedArguments.length : arityOfCurriedFunction;
 
-        let amountOfRemainingArguments = arityOfCurriedFunction - providedArguments.length;
+        let amountOfRemainingArguments = workingArity - providedArguments.length;
         for (let providedArgument of providedArguments) {
             if (providedArgument === _) {
                 amountOfRemainingArguments++;
             }
         }
-        const isRemainingArguments = amountOfRemainingArguments > 0;
 
+        const isRemainingArguments = amountOfRemainingArguments > 0;
         // Scenario 1: There are remaining arguments
         if (isRemainingArguments) {
             return functionOfArity((...newArgs) => {
