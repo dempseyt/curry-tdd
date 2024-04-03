@@ -103,5 +103,26 @@ describe("curry", () => {
         eq(g(1, 2)(3, 4), [1, 2, 3, 4]);
         eq(g(1)(2, 3, 4), [1, 2, 3, 4]);
         eq(g(1)(2)(3, 4), [1, 2, 3, 4]);
-    })
+    });
+    it('handles arguments beyond function arity when called with placeholder', () => {
+        let f = function(a, b, c) { return [a, b, c]; };
+        let g = curry(f);
+        
+        function eq(actual, expected) {
+            return expect(actual).toEqual(expected);
+        }
+        
+        eq(g(1)(_, _, _)(2, _, _)(3)(4), [1, 2, 3]);
+        eq(g(_, 2, 3, 4)(1), [1, 2, 3]);
+        eq(g(1, 2, 3, _)(4), [1, 2, 3]);
+        eq(g(1)(_, 3, 4)(2), [1, 2, 3]);
+        eq(g(_)(_, 2, 3, 4)(1), [1, 2, 3]);
+        eq(g(_)(_, 2, _, 4, 5)(_, 3, 4)(1), [1, 2, 3]);
+        eq(g(_, _, _)(1, _, _)(_, _)(2, _)(_)(3), [1, 2, 3]);
+
+        // g(_) --> h(a, b, c)
+        // h(_, 2, _, 4, 5) --> i(a, c)
+        // i(1, 3) --> g(1, 2, 3, 4, 5) --> [1, 2, 3]
+        eq(g(_)(_, 2, _, 4, 5)(1, 3), [1, 2, 3]);
+    });
 });
