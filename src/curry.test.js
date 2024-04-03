@@ -136,4 +136,17 @@ describe("curry", () => {
         // i(1, 3) --> g(1, 2, 3, 4, 5) --> [1, 2, 3]
         eq(g(_)(_, 2, _, 4, 5)(1, 3), [1, 2, 3]);
     });
+    it('passes along all arguments from previous calls including placeholder', () => {
+        let f = function() { return [...arguments]; };
+        let g = curry(f);
+
+        function eq(actual, expected) {
+            return expect(actual).toEqual(expected);
+        }
+
+        eq(g(_)(_, 2, _, 4, 5)(1, 3), [1, 2, 3, 4, 5]);
+        eq(g(_, 2, 3, 4)(_, 5, 6)(_, 7, 8, 9)(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        eq(g(1), [1]);
+        eq(g(), []);
+    });
 });
