@@ -1,5 +1,6 @@
 import curry from './curry'
 import _ from './_'
+const fc = require('fast-check');
 
 describe("curry", () => {
     it("curries a single value", () => {
@@ -150,3 +151,20 @@ describe("curry", () => {
         eq(g(), []);
     });
 });
+describe("curry properties", () => {
+    it('curries multiple values', () => {
+        fc.assert(fc.property(fc.func(fc.anything()), fc.anything(), fc.anything(), fc.anything(), fc.anything(), function(f, a, b, c, d) {
+            const f4 = function(a, b, c, d) {
+              return f(a, b, c, d);
+            };
+            const g = curry(f4);
+            
+
+            expect(f4(a,b,c,d)).toEqual(g(a,b,c,d));
+            expect(f4(a,b,c,d)).toEqual(g(a)(b)(c)(d));
+            expect(f4(a,b,c,d)).toEqual(g(a)(b,c,d));
+            expect(f4(a,b,c,d)).toEqual(g(a,b)(c,d));
+            expect(f4(a,b,c,d)).toEqual(g(a,b,c)(d));
+        }));
+    });
+})
