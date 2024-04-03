@@ -8,7 +8,6 @@ describe("curry", () => {
         })
         const f = curry(mockedToCurry);
         const g = f(12);
-        
         expect(g(3, 6, 2)).toBe(15);
     });
     it("curries multiple values", () => {

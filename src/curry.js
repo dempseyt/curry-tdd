@@ -1,3 +1,5 @@
+import _ from './_'
+
 function functionOfArity(func, arity) {
     switch (arity) {
         case 4:
@@ -21,20 +23,41 @@ function functionOfArity(func, arity) {
     }
 }
 
+function replacePlaceholders(currentArguments, args) {
+    //  Scenario 1: unable to replace any placeholders
+    //  Scenario 2: replace all of the placeholders
+    //  Scenario 3: replace some of them
+    const {resultArgs, argsToMerge} = currentArguments.reduce( function({resultArgs, argsToMerge}, currentValue) {
+        if (argsToMerge.length > 0 && currentValue === _) {
+                resultArgs.push(argsToMerge.shift());
+        } else {
+            resultArgs.push(currentValue);
+        }
+        return {resultArgs, argsToMerge};
+    }, {resultArgs:[], argsToMerge:args});
+    return [resultArgs, argsToMerge];
+}
+
 function curry(func) {
     const arityOfCurriedFunction = func.length;
     
     function curriedFunction(...providedArguments) {
-        const remainingArguments = arityOfCurriedFunction - providedArguments.length;
-        const isRemainingArguments = remainingArguments > 0;
+
+        let amountOfRemainingArguments = arityOfCurriedFunction - providedArguments.length;
+        for (let providedArgument of providedArguments) {
+            if (providedArgument === _) {
+                amountOfRemainingArguments++;
+            }
+        }
+        const isRemainingArguments = amountOfRemainingArguments > 0;
 
         // Scenario 1: There are remaining arguments
         if (isRemainingArguments) {
-            return functionOfArity((...args) => {
-                    return curriedFunction.call(this, ...providedArguments, ...args);
-                }, remainingArguments
+            return functionOfArity((...newArgs) => {
+                    const [partiallyReplacedArguments, remainingArguments] = replacePlaceholders(providedArguments, newArgs);
+                    return curriedFunction.call(this, ...partiallyReplacedArguments, ...remainingArguments);
+                }, amountOfRemainingArguments
             )
-            
         } 
         // Scenario 2: No remaining arguments
         else {
