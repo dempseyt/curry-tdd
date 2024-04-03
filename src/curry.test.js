@@ -167,4 +167,20 @@ describe("curry properties", () => {
             expect(f4(a,b,c,d)).toEqual(g(a,b,c)(d));
         }));
     });
+    it("curries with placeholder", () => {
+        fc.assert(fc.property(fc.func(fc.anything()), fc.anything(), fc.anything(), fc.anything(), function(f, a, b, c) {
+            const f3 = function(a, b, c) {
+              return f(a, b, c);
+            };
+            const g = curry(f3);
+      
+
+            expect(f3(a,b,c)).toEqual(g(_,_,c)(a,b));
+            expect(f3(a,b,c)).toEqual(g(a,_,c)(b));
+            expect(f3(a,b,c)).toEqual(g(_,b,c)(a));
+            expect(f3(a,b,c)).toEqual(g(a,_,_)(_,c)(b));
+            expect(f3(a,b,c)).toEqual(g(a,b,_)(c));
+
+          }));
+    })
 })
