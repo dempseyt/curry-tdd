@@ -24,9 +24,6 @@ function functionOfArity(func, arity) {
 }
 
 function replacePlaceholders(currentArguments, args) {
-    //  Scenario 1: unable to replace any placeholders
-    //  Scenario 2: replace all of the placeholders
-    //  Scenario 3: replace some of them
     const {resultArgs, argsToMerge} = currentArguments.reduce( function({resultArgs, argsToMerge}, currentValue) {
         if (argsToMerge.length > 0 && currentValue === _) {
                 resultArgs.push(argsToMerge.shift());
